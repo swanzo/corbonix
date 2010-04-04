@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Nitrogen
+GenericName=Nitrogen background browser and setter
+Comment=Background browser and setter for X windows
+Exec=nitrogen
+Icon=nitrogen
+Terminal=false
+Type=Application
+Categories=Settings;DesktopSettings;
+

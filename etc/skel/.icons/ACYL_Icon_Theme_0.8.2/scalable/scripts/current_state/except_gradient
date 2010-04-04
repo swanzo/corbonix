@@ -1,0 +1,9 @@
+#! usr/bin/bash
+echo '<linearGradient
+     inkscape:collect="always"
+     xlink:href="#linearGradient4321"
+     id="acyl_gradient"
+     x1="0%"
+     y1="0%"
+     x2="100%"
+     y2="100%" />'

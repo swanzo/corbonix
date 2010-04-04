@@ -1,0 +1,225 @@
+#!/bin/bash
+source ./script_filter
+
+#Function for refreshing the icontheme.
+function refresh {
+	gconftool-2 --type string --set /desktop/gnome/interface/icon_theme default
+	gconftool-2 --type string --set /desktop/gnome/interface/icon_theme $cuver
+	killall gnome-panel
+	killall fbpanel
+	nohup fbpanel &
+	sleep 1
+	clear
+	echo "Finished, press any key to continue."
+	read -n 1
+	clear
+}
+
+#Function for retriving settings currently in use.
+#   $1 is the return parameter.
+#   $2 is the target destination.
+function get_current {
+	eval "$1='`bash current_state/$2`'"
+}
+
+#Function for generating gradient color-settings.
+#   $1 is the return parameter.
+#   $2 is the first color.
+#   $3 is the first opacity.
+#   $4 is the second color.
+#   $5 is the second opacity.
+function gradient_colors {
+	eval "$1='<linearGradient\n     id=\"linearGradient4321\">\n    <stop\n       style=\"stop-color:'$2';stop-opacity:'$3';\"\n       offset=\"0\"\n       id=\"stop1\" />\n    <stop\n       style=\"stop-color:'$4';stop-opacity:'$5';\"\n       offset=\"1\"\n       id=\"stop2\" />\n  </linearGradient>'"
+}
+
+#function for generating a linear gradient.
+#   $1 is the return parameter.
+#   $2 is the x-cooridante for the start-point.
+#   $3 is the y-cooridante for the start-point.
+#   $4 is the x-cooridante for the end-point.
+#   $5 is the y-cooridante for the end-point.
+function gradient_linear {
+	eval "$1='<linearGradient\n     inkscape:collect=\"always\"\n     xlink:href=\"#linearGradient4321\"\n     id=\"acyl_gradient\"\n     x1=\"'$2'%\"\n     y1=\"'$3'%\"\n     x2=\"'$4'%\"\n     y2=\"'$5'%\" />'"
+}
+
+#Function for generating a radial gradient.
+#   $1 is the return parameter.
+#   $2 is the radius in procent relative to the rest of the icon.
+#   $3 is the x-cooridante for the center.
+#   $4 is the y-coordinate for the center.
+#   $5 is the x-coordinate for the focus point.
+#   $6 is the y-coordinate for the focus point.
+function gradient_radial {
+	eval "$1='<radialGradient\n       inkscape:collect=\"always\"\n       xlink:href=\"#linearGradient4321\"\n       id=\"acyl_gradient\"\n       cx=\"'$3'%\"\n       cy=\"'$4'%\"\n       fx=\"'$5'%\"\n       fy=\"'$6'%\"\n       r=\"'$2'%\"\n/>'"
+}
+
+#Function for retriving filters.
+#   $1 is the return parameter.
+#   $2 is the target filter.
+#   $3 -> $9 is optional parameters for specific filters.
+function get_filter {
+	filter_$2 filter $3 $4 $5 $6 $7 $8 $9
+	eval "$1='$filter'"
+}
+
+#Function for changing folder.
+#   $1 is the target folder.
+function folder_change {
+	cp -R ../alt_folders/$1/* ../real_icons
+}
+
+#Function for changing logo.
+#   $1 is the target logo.
+function logo_change {
+	cp -r ../logos/$1 ../real_icons/apps/checkbox-gtk.svg
+	cp -r ../logos/$1 ../real_icons/places/distributor-logo.svg
+}
+
+#Function for setting a custom logo.
+#   $1 is the target file to be the new logo.
+function set_custom_logo {
+	cp "$1" ../logos/custom
+	sleep 1
+	logo_change custom
+}
+
+#Function for copying the sonata icons to "/usr/share/pixamps/".
+#   $1 is the required password.
+function sonata_copy {
+	if [ -d /usr/share/pixmaps/sonata_backup ]
+	then
+		echo $1 | sudo -S -p "" cp -r ../specific_applications/sonata/* /usr/share/pixmaps/
+	else
+		echo $1 | sudo -S -p "" mkdir /usr/share/pixmaps/sonata_backup
+		echo $1 | sudo -S -p "" cp -r /usr/share/pixmaps/sonata*.png /usr/share/pixmaps/sonata_backup/
+		echo $1 | sudo -S -p "" cp -r ../specific_applications/sonata/* /usr/share/pixmaps/
+		
+	fi
+}
+
+#Function For copying the pidgin icons to "/usr/share/pixamps/".
+#   $1 is the required password.
+function pidgin_copy {
+	if [ -d /usr/share/pixmaps/pidgin_backup ]
+	then
+		echo $1 | sudo -S -p "" cp -R ../specific_applications/pidgin /usr/share/pixmaps/
+	else
+		echo $1 | sudo -S -p "" mkdir /usr/share/pixmaps/pidgin_backup
+		echo $1 | sudo -S -p "" cp -R /usr/share/pixmaps/pidgin /usr/share/pixmaps/pidgin_backup
+		echo $1 | sudo -S -p ""  cp -R ../specific_applications/pidgin /usr/share/pixmaps/
+	fi
+}
+#Function for copying the theme to root user.
+#   $1 is the required password.
+function root_copy {
+	cuver=`bash current_state/current_version`
+	echo $1 | sudo -S -p "" cp -r ../../ /usr/share/icons/$cuver
+}
+
+#Function for making the script executable trough the terminal and creating a menu-item.
+#   $1 is the required password.
+function make_exec {
+	echo $1 | sudo -S -p "" cp ../other/acyl /usr/bin/acyl
+	echo $1 | sudo -S -p "" cp ../other/acyl.desktop /usr/share/applications/acyl.desktop
+}
+
+#Function for appying settings to all icons.
+#   $1 is the filter.
+#   $2 is the color-settings.
+#   $3 is the gradient settings.
+function apply_actions {
+	filter=$1
+	color=$2
+	gradient=$3
+	if [ "$filter" = "none" ]; then
+		get_current filter actions_filter
+	fi
+	if [ "$color" = "none" ]; then
+		get_current color actions_color
+	fi
+	if [ "$gradient" = "none" ]; then
+		get_current gradient actions_gradient
+	fi
+
+	eval "set='<acyl-settings>\n$filter\n$color\n$gradient\n</acyl-settings>'"
+
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../real_icons/actions/*.svg
+
+	perl -i -pe 'BEGIN{undef $/;} s+<linearGradient.*</linearGradient>+'"$color"'+smg' ./current_state/actions_color
+	perl -i -pe 'BEGIN{undef $/;} s+<filter.*</filter>+'"$filter"'+smg' ./current_state/actions_filter
+	perl -i -pe 'BEGIN{undef $/;} s+<.*/>+'"$gradient"'+smg' ./current_state/actions_gradient
+}
+
+#Function for appying settings to all icons.
+#   $1 is the filter.
+#   $2 is the color-settings.
+#   $3 is the gradient settings.
+function apply_emblems {
+	filter=$1
+	color=$2
+	gradient=$3
+	if [ "$filter" = "none" ]; then
+		get_current filter emblems_filter
+	fi
+	if [ "$color" = "none" ]; then
+		get_current color emblems_color
+	fi
+	if [ "$gradient" = "none" ]; then
+		get_current gradient emblems_gradient
+	fi
+
+	eval "set='<acyl-settings>\n$filter\n$color\n$gradient\n</acyl-settings>'"
+
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../real_icons/emblems/*.svg
+
+	perl -i -pe 'BEGIN{undef $/;} s+<linearGradient.*</linearGradient>+'"$color"'+smg' ./current_state/emblems_color
+	perl -i -pe 'BEGIN{undef $/;} s+<filter.*</filter>+'"$filter"'+smg' ./current_state/emblems_filter
+	perl -i -pe 'BEGIN{undef $/;} s+<.*/>+'"$gradient"'+smg' ./current_state/emblems_gradient
+}
+
+#Function for appying settings to all icons.
+#   $1 is the filter.
+#   $2 is the color-settings.
+#   $3 is the gradient settings.
+function apply_except {
+	filter=$1
+	color=$2
+	gradient=$3
+	if [ "$filter" = "none" ]; then
+		get_current filter except_filter
+	fi
+	if [ "$color" = "none" ]; then
+		get_current color except_color
+	fi
+	if [ "$gradient" = "none" ]; then
+		get_current gradient except_gradient
+	fi
+	eval "set='<acyl-settings>\n$filter\n$color\n$gradient\n</acyl-settings>'"
+
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../real_icons/animations/*.svg
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../real_icons/apps/*.svg
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../real_icons/categories/*.svg
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../real_icons/devices/*.svg
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../real_icons/mimetypes/*.svg
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../real_icons/places/*.svg
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../real_icons/status/*.svg
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../real_icons/stock/*.svg
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../logos/*
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../alt_folders/*/*/*.svg
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../specific_applications/*/*.png
+	perl -i -pe 'BEGIN{undef $/;} s+<acyl-settings>.*</acyl-settings>+'"$set"'+smg' ../specific_applications/*/*/*/*
+
+	perl -i -pe 'BEGIN{undef $/;} s+<linearGradient.*</linearGradient>+'"$color"'+smg' ./current_state/except_color
+	perl -i -pe 'BEGIN{undef $/;} s+<filter.*</filter>+'"$filter"'+smg' ./current_state/except_filter
+	perl -i -pe 'BEGIN{undef $/;} s+<.*/>+'"$gradient"'+smg' ./current_state/except_gradient
+}
+
+#Function for appying settings to all icons.
+#   $1 is the filter.
+#   $2 is the color-settings.
+#   $3 is the gradient settings.
+function apply_all {	
+	apply_actions "$1" "$2" "$3"
+	apply_emblems "$1" "$2" "$3"
+	apply_except "$1" "$2" "$3"
+}

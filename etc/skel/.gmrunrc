@@ -1,0 +1,7 @@
+ShowDotFiles = 1
+TabTimeout = 0
+Terminal = terminator
+TermExec = terminator --command
+URL_http = google-chrome '%u'
+URL_mailto = mutt '%s'
+EXT:html = google-chrome file://%s

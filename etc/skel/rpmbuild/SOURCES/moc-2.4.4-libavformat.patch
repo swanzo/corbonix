@@ -1,0 +1,14 @@
+diff -uNr moc-2.4.4/configure.in moc-2.4.4p/configure.in
+--- moc-2.4.4/configure.in	2009-01-04 02:28:31.000000000 -0600
++++ moc-2.4.4p/configure.in	2010-03-29 01:04:07.307946198 -0500
+@@ -400,7 +400,10 @@
+ 				  DECODER_PLUGINS="$DECODER_PLUGINS ffmpeg"],
+ 				  [true])
+ 	fi
++	CPPFLAGS_saved="$CPPFLAGS"
++	CPPFLAGS="$CPPFLAGS $libavformat_CFLAGS"
+ 	AC_CHECK_HEADERS(ffmpeg/avformat.h libavformat/avformat.h)
++	CPPFLAGS="$CPPFLAGS_saved"
+ fi
+ 
+ dnl speex

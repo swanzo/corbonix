@@ -1,0 +1,84 @@
+# conky configuration
+#
+# The list of variables has been removed from this file in favour
+# of keeping the documentation more maintainable.
+# Check http://conky.sf.net for an up-to-date-list.
+#
+# For ideas about how to modify conky, please see:
+# http://crunchbanglinux.org/forums/topic/59/my-conky-config/
+#
+# For help with conky, please see:
+# http://crunchbanglinux.org/forums/topic/2047/conky-help/
+#
+# Enjoy! :)
+##############################################
+#  Settings
+##############################################
+background yes
+use_xft yes
+xftfont Droid Sans Mono:size=8
+xftalpha 1
+update_interval 1.0
+total_run_times 0
+own_window yes
+own_window_transparent yes
+own_window_type normal
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+double_buffer yes
+text_buffer_size 288
+minimum_size 12 12
+#maximum_width 240
+draw_shades yes
+draw_outline no
+draw_borders no
+draw_graph_borders no
+default_color D3D7CF
+default_shade_color 224058
+default_outline_color D3D7CF
+alignment bottom_right
+gap_x 12
+gap_y 32
+no_buffers yes
+uppercase no
+cpu_avg_samples 2
+override_utf8_locale no
+##############################################
+#  Output
+##############################################
+TEXT
+${color}${alignr}Uptime
+${color A7C3DD}${alignr}${uptime}
+
+${color}${alignr}CPU
+${color A7C3DD}${alignr}${cpu cpu0}.00%
+
+${color}${alignr}RAM
+${color A7C3DD}${alignr}${memperc}.00%
+
+${color}${alignr}Swap
+${color A7C3DD}${alignr}${swapperc}.00%
+
+${color}${alignr}Root
+${color A7C3DD}${alignr}${fs_used_perc /}.00%
+
+${color}${alignr}Home
+${color A7C3DD}${alignr}${fs_used_perc /home}.00%
+
+${color}${alignr}Power
+${color A7C3DD}${alignr}${battery_percent}.00%
+
+${color}${alignr}Temperature
+${color A7C3DD}${alignr}${acpitemp}C
+
+${color}${alignr}Upload
+${color A7C3DD}${alignr}${upspeedf}kb/s
+
+${color}${alignr}Download
+${color A7C3DD}${alignr}${downspeedf}kb/s
+${color}
+                                     _        
+                    _               (_)       
+  ____   ____  __  / /_  ____  ____  _ __  __ 
+ / ___\ / __ \/ _\/ _  \/ __ \/ __ \| |\ \/ / 
+/ /____/ /_/ / / / /_/ / /_/ / / / /| | )  (  
+\_____/_____/_/  \____/_____/_/ /_/ |_|/_/\_\ 

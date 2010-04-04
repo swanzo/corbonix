@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openbox_menu xmlns="http://openbox.org/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://openbox.org/                 file:///usr/share/openbox/menu.xsd">
+	<menu id="root-menu" label="Openbox 3">
+		<item label="Run Program">
+			<action name="Execute">
+				<execute>
+					gmrun
+				</execute>
+			</action>
+		</item>
+		<separator/>
+		<item label="Terminal">
+			<action name="Execute">
+				<execute>
+					terminator
+				</execute>
+			</action>
+		</item>
+		<item label="Web Browser">
+			<action name="Execute">
+				<execute>
+					google-chrome
+				</execute>
+			</action>
+		</item>
+		<item label="File Manager">
+			<action name="Execute">
+				<execute>
+					thunar
+				</execute>
+			</action>
+		</item>
+		<item label="Text Editor">
+			<action name="Execute">
+				<execute>
+					leafpad
+				</execute>
+			</action>
+		</item>
+		<item label="Media Player">
+			<action name="Execute">
+				<execute>
+					vlc
+				</execute>
+			</action>
+		</item>
+		<separator/>
+		<menu id="terminal" label="Terminal Apps">
+			<item label="Vim - Text Editor">
+				<action name="Execute">
+					<execute>
+                        terminator --command=vim
+					</execute>
+				</action>
+			</item>
+			<item label="Midnight Commander - File Manager">
+				<action name="Execute">
+					<execute>
+                        terminator --command=mc
+					</execute>
+				</action>
+			</item>
+			<item label="rtorrent - Bit Torrent Client">
+				<action name="Execute">
+					<execute>
+                        terminator --command=rtorrent
+					</execute>
+				</action>
+			</item>
+			<item label="MoC - Music Player">
+				<action name="Execute">
+					<execute>
+                        terminator --command=mocp
+					</execute>
+				</action>
+			</item>
+			<item label="newsbeuter - Feed Reader">
+				<action name="Execute">
+					<execute>
+                        terminator --command=&quot;newsbeuter -r&quot;
+					</execute>
+				</action>
+			</item>
+			<item label="elinks - Web Browser">
+				<action name="Execute">
+					<execute>
+                        terminator --command=elinks
+					</execute>
+				</action>
+			</item>
+			<item label="MUTT - Email Client">
+				<action name="Execute">
+					<execute>
+                        terminator --command=mutt
+					</execute>
+				</action>
+			</item>
+			<item label="irssi - IRC Client">
+				<action name="Execute">
+					<execute>
+                        terminator --command=irssi
+					</execute>
+				</action>
+			</item>
+			<item label="htop - System Monitor">
+				<action name="Execute">
+					<execute>
+						terminator --command=htop
+					</execute>
+				</action>
+			</item>
+			<menu id="terminalmanpages" label="Help?">
+				<separator label="man pages"/>
+				<item label="Vim">
+					<action name="Execute">
+						<execute>
+                            terminator --command=&quot;man vim&quot;
+						</execute>
+					</action>
+				</item>
+				<item label="Midnight Commander">
+					<action name="Execute">
+						<execute>
+                            terminator --command=&quot;man mc&quot;
+						</execute>
+					</action>
+				</item>
+				<item label="rtorrent">
+					<action name="Execute">
+						<execute>
+                            terminator --command=&quot;man rtorrent&quot;
+						</execute>
+					</action>
+				</item>
+				<item label="MoC">
+					<action name="Execute">
+						<execute>
+                            terminator --command=&quot;man mocp&quot;
+						</execute>
+					</action>
+				</item>
+				<item label="newsbeuter">
+					<action name="Execute">
+						<execute>
+                            terminator --command=&quot;man newsbeuter&quot;
+						</execute>
+					</action>
+				</item>
+				<item label="elinks">
+					<action name="Execute">
+						<execute>
+                            terminator --command=&quot;man elinks&quot;
+						</execute>
+					</action>
+				</item>
+				<item label="MUTT">
+					<action name="Execute">
+						<execute>
+                            terminator --command=&quot;man mutt&quot;
+						</execute>
+					</action>
+				</item>
+				<item label="irssi">
+					<action name="Execute">
+						<execute>
+                            terminator --command=&quot;man irssi&quot;
+						</execute>
+					</action>
+				</item>
+				<item label="htop">
+					<action name="Execute">
+						<execute>
+					        terminator --command=&quot;man htop&quot;
+						</execute>
+					</action>
+				</item>
+			</menu>
+		</menu>
+		<separator/>
+		<menu execute="~/bin/obplaces ~/" id="places" label="Places"/>
+		<separator/>
+		<menu id="preferences" label="Preferences">
+			<menu id="conkyconfig" label="Conky Config">
+				<item label="Edit .conkyrc">
+					<action name="Execute">
+						<execute>
+							leafpad ~/.conkyrc
+						</execute>
+					</action>
+				</item>
+				<item label="Restart Conky">
+					<action name="Execute">
+						<execute>
+							~/bin/conkywonky
+						</execute>
+					</action>
+				</item>
+				<separator label="Help?"/>
+				<item label="man page">
+					<action name="Execute">
+						<execute>
+							terminator --command=&quot;man conky&quot;
+						</execute>
+					</action>
+				</item>
+			</menu>
+			<menu id="dmenuconfig" label="dmenu Config">
+				<item label="Edit start-up script">
+					<action name="Execute">
+						<execute>
+							leafpad ~/.config/dmenu/dmenu-bind.sh
+						</execute>
+					</action>
+				</item>
+				<separator label="Help?"/>
+				<item label="man page">
+					<action name="Execute">
+						<execute>
+							terminator --command=&quot;man dmenu&quot;
+						</execute>
+					</action>
+				</item>
+			</menu>
+			<menu id="gmrunconfig" label="gmrun Config">
+				<item label="Edit config file">
+					<action name="Execute">
+						<execute>
+							leafpad ~/.gmrunrc
+						</execute>
+					</action>
+				</item>
+				<separator label="Help?"/>
+				<item label="man page">
+					<action name="Execute">
+						<execute>
+							terminator --command=&quot;man gmrun&quot;
+						</execute>
+					</action>
+				</item>
+			</menu>
+			<menu id="obConfig" label="Openbox Config">
+				<item label="Edit menu.xml">
+					<action name="Execute">
+						<execute>
+							leafpad ~/.config/openbox/menu.xml
+						</execute>
+					</action>
+				</item>
+				<item label="Edit rc.xml">
+					<action name="Execute">
+						<execute>
+							leafpad ~/.config/openbox/rc.xml
+						</execute>
+					</action>
+				</item>
+				<item label="Edit autostart.sh">
+					<action name="Execute">
+						<execute>
+							leafpad ~/.config/openbox/autostart.sh
+						</execute>
+					</action>
+				</item>
+				<item label="GUI Menu Editor">
+					<action name="Execute">
+						<execute>
+							obmenu
+						</execute>
+					</action>
+				</item>
+				<item label="GUI Config Tool">
+					<action name="Execute">
+						<execute>
+							obconf
+						</execute>
+					</action>
+				</item>
+				<item label="Reconfigure">
+					<action name="Reconfigure"/>
+				</item>
+				<item label="Restart">
+					<action name="Restart"/>
+				</item>
+			</menu>
+			<menu id="terminatorconfig" label="Terminator Config">
+				<item label="Edit config file">
+					<action name="Execute">
+						<execute>
+							leafpad ~/.config/terminator/config
+						</execute>
+					</action>
+				</item>
+				<separator label="Help?"/>
+				<item label="man page">
+					<action name="Execute">
+						<execute>
+							terminator --command=&quot;man terminator_config&quot;
+						</execute>
+					</action>
+				</item>
+			</menu>
+			<menu id="tint2config" label="tint2 Panel Config">
+				<item label="Edit config file">
+					<action name="Execute">
+						<execute>
+							leafpad ~/.config/tint2/tint2rc
+						</execute>
+					</action>
+				</item>
+				<separator label="Help?"/>
+				<item label="man page">
+					<action name="Execute">
+						<execute>
+							terminator --command=&quot;man tint2&quot;
+						</execute>
+					</action>
+				</item>
+			</menu>
+			<item label="User Interface Settings">
+				<action name="Execute">
+					<execute>
+						lxappearance
+					</execute>
+				</action>
+			</item>
+			<item label="Choose Wallpaper">
+				<action name="Execute">
+					<execute>
+						nitrogen ~/images/wallpapers/
+					</execute>
+				</action>
+			</item>
+		</menu>
+		<menu id="system" label="System">
+			<item label="System Update">
+				<action name="Execute">
+					<execute>
+						gpk-update-viewer
+					</execute>
+				</action>
+			</item>
+			<item label="Disk Partitioner">
+				<action name="Execute">
+					<execute>
+						gparted
+					</execute>
+				</action>
+			</item>
+			<menu id="DisplaySettings" label="Display Settings">
+				<item label="Adjust with lxrandr">
+					<action name="Execute">
+						<execute>
+						    lxrandr
+						</execute>
+					</action>
+				</item>
+				<separator label="Help?"/>
+				<item label="man xrandr">
+					<action name="Execute">
+						<execute>
+						    terminator --command=&quot;man xrandr&quot;
+						</execute>
+					</action>
+				</item>
+			</menu>
+			<item label="Network Admin">
+				<action name="Execute">
+					<execute>
+						system-config-network
+					</execute>
+				</action>
+			</item>
+			<item label="Package Manager">
+				<action name="Execute">
+					<execute>
+						gpk-application
+					</execute>
+				</action>
+			</item>
+			<item label="Printer Settings">
+				<action name="Execute">
+					<execute>
+						system-config-printer
+					</execute>
+				</action>
+			</item>
+			<item label="Services/Daemons">
+				<action name="Execute">
+					<execute>
+						system-config-services
+					</execute>
+				</action>
+			</item>
+			<item label="System Monitor">
+				<action name="Execute">
+					<execute>
+						terminator --command=htop
+					</execute>
+				</action>
+			</item>
+			<item label="Time/Date">
+				<action name="Execute">
+					<execute>
+						system-config-date
+					</execute>
+				</action>
+			</item>
+			<item label="Users/Groups">
+				<action name="Execute">
+					<execute>
+						system-config-users
+					</execute>
+				</action>
+			</item>
+		</menu>
+		<separator/>
+		<item label="Lock Screen">
+			<action name="Execute">
+				<execute>
+					xlock -mode goop
+				</execute>
+			</action>
+		</item>
+		<item label="Exit">
+			<action name="Execute">
+				<execute>
+					~/bin/oblogout
+				</execute>
+			</action>
+		</item>
+	</menu>
+</openbox_menu>

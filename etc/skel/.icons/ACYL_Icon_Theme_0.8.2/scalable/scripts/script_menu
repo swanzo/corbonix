@@ -1,0 +1,507 @@
+#!/bin/bash
+source ./script_functions
+
+#Function for colorselection.
+#$1 is the return parameter for the color.
+#$2 is the return parameter for the opacity.
+function color {
+	colorvar=`python script_pycolor`
+	if [[ "$colorvar" = "" ]]
+	then
+		bash script_menu
+		exit
+	fi
+	
+	red=`echo $colorvar | cut -d \  -f 1`
+	green=`echo $colorvar | cut -d \  -f 2`
+	blue=`echo $colorvar | cut -d \  -f 3`
+	alpha=`echo $colorvar | cut -d \  -f 4`
+	
+	if [[ "$red" = [0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,A,B,C,D,E,F] ]]
+	then
+		red="0"$red
+	fi
+	
+	if [[ "$green" = [0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,A,B,C,D,E,F] ]]
+	then
+		green="0"$green
+	fi
+	
+	if [[ "$blue" = [0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,A,B,C,D,E,F] ]]
+	then
+		blue="0"$blue
+	fi
+	
+	eval "$1=#$red$green$blue"
+	eval "$2=$alpha"
+}
+
+#Interface which outoust linear settings.
+#   $1 is the return parameter for the x-cooridante of the start-point.
+#   $2 is the return parameter for the y-cooridante of the start-point.
+#   $3 is the return parameter for the x-cooridante of the end-point.
+#   $4 is the return parameter for the y-cooridante of the end-point.
+function linear_interface {
+	echo "Select gradient direction."
+	echo "1.Horizontal"
+	echo "2.Vertical"
+	echo "3.Diagonally"
+
+	read linedirection
+
+	if [[ "$linedirection" = 1 ]]
+	then
+		eval "$1=0"; eval "$2=50"; eval "$3=100"; eval "$4=50"
+	fi
+	if [[ "$linedirection" = 2 ]]
+	then
+		eval "$1=50"; eval "$2=0"; eval "$3=50"; eval "$4=100"
+	fi
+	if [[ "$linedirection" = 3 ]]
+	then
+		eval "$1=0"; eval "$2=0"; eval "$3=100"; eval "$4=100"
+	fi
+	if [[ "$linedirection" != [1,2,3] ]]
+	then
+		bash scrip_menu
+		exit
+	fi
+}
+
+#Interface which outputs radial settings.
+#   $1 is the return parameter for the radius.
+#   $2 is the return parameter for the x-cooridante of the center point.
+#   $3 is the return parameter for the y-cooridante of the center point.
+#   $4 is the return parameter for the x-coordinate of the focus point.
+#   $5 is the return parameter for the y-coordinate of the focus point.
+function radial_interface {
+	r=`zenity --scale --text "Enter the radius of the gradient. (50% default)" --min-value=0 --max-value=100 --value=50 --step 1`
+	while [[ "$r" = "" ]]
+	do clear; bash script_menu; exit;
+	done
+
+	cx=`zenity --scale --text "Enter the x-coordinate for the center point of the gradient. A number or percentage. (50% default)" --min-value=-200 --max-value=300 --value=50 --step 1`
+	while [[ "$cx" = "" ]]
+	do clear; bash script_menu; exit
+	done
+
+	cy=`zenity --scale --text "Enter the y-coordinate for the center point of the gradient. A number or percentage. (50% default)" --min-value=-200 --max-value=300 --value=50 --step 1`
+	while [[ "$cy" = "" ]]
+	do clear; bash script_menu; exit
+	done
+
+	fx=`zenity --scale --text "Enter the x-coordinate for the focus point of the gradient. A number or percentage. (50% default)" --min-value=-200 --max-value=300 --value=50 --step 1`
+	while [[ "$fx" = "" ]]
+	do clear; bash script_menu; exit
+	done
+
+	fy=`zenity --scale --text "Enter the y-coordinate for the focus point of the gradient. A number or percentage. (50% default)" --min-value=-200 --max-value=300 --value=50 --step 1`
+	while [[ "$fy" = "" ]]
+	do clear; bash script_menu; exit
+	done
+
+	eval "$1=$r"
+	eval "$2=$cx"
+	eval "$3=$cy"
+	eval "$4=$fx"
+	eval "$5=$fy"
+}
+
+#Interface for choosing gradient type.
+   #$1 is the return parameter.
+function gradient_interface {
+	echo "What kind of gradient do you want?"
+	echo "1. Linear"
+	echo "2. Radial"
+	echo "3. Back to main menu."
+
+	read gradsort
+
+	if [[ "$gradsort" != [1,2] ]]
+	then
+		bash script_menu
+		exit
+	fi
+
+	if [[ "$gradsort" = [1] ]]
+	then
+		linear_interface sx sy ex ey
+		gradient_linear gradient $sx $sy $ex $ey
+	fi
+
+	if [[ "$gradsort" = [2] ]]
+	then
+		radial_interface r cx cy fx fy
+		gradient_radial gradient $r $cx $cy $fx $fy
+	fi
+
+	eval "$1='$gradient'"
+}
+
+#Intterface for choosing filter.
+#   $1 is the return parameter.
+#   $2 is the applt target.
+function filter_interface {
+	clear
+	echo "Select which filter you want to apply."
+	echo "1. Wood"
+	echo "2. Brushed metal."
+	echo "3. Cutout."
+	echo "4. Glass."
+	echo "5. Paper."
+	echo "6. Disable filter."
+	echo "7. Back to main menu."
+	read input
+	if [[ "$input" != [1,2,3,4,5,6] ]]
+	then
+		bash script_menu
+		exit
+	fi
+	if [ "$input" = "1" ]; then get_filter var wood; eval "$1='$var'"; fi
+	if [ "$input" = "2" ]; then get_filter var brushed_metal; eval "$1='$var'"; fi
+	if [ "$input" = "3" ]; then get_filter var cutout; eval "$1='$var'"; fi
+	if [ "$input" = "4" ]; then get_filter var glass; eval "$1='$var'"; fi
+	if [ "$input" = "5" ]; then color col opa;get_filter var paper "$col" "$opa"; eval "$1='$var'"; fi
+	if [ "$input" = "6" ]; then get_filter var disabled; eval "$1='$var'"; fi
+	apply_$2 "$filter" "none" "none"
+	refresh
+	filter_interface $1 $2
+}
+#Function for selecting a file.
+#   $1 is the return parameter for the file path.
+function file_path {
+	cd ../apps/
+	file=`zenity --title="Select which icon to set as your custom logo" --file-selection`
+	cd ../scripts/
+	while [[ $file = "" ]]
+	do
+		clear
+		bash script_menu
+		exit
+	done
+
+	eval "$1=$file"
+}
+
+#Function for changing the logo.
+function logo_change_interface {
+	echo "Enter the number of the logo you want to use."
+	echo "1. Arch."
+	echo "2. Debian."
+	echo "3. Fedora."
+	echo "4. Gnome"
+	echo "5. Ubuntu."
+	echo "6. Zenwalk."
+	echo "7. Custom."
+	echo "8. Set custom logo."
+	echo "9. Go back to main menu."
+	read input
+	if [[ "$input" != [1,2,3,4,5,6,7,8] ]]
+	then
+		bash script_menu
+		exit
+	fi
+	if [ "$input" = "1" ]; then logo_change arch; fi
+	if [ "$input" = "2" ]; then logo_change debian; fi
+	if [ "$input" = "3" ]; then logo_change fedora; fi
+	if [ "$input" = "4" ]; then logo_change gnome; fi
+	if [ "$input" = "5" ]; then logo_change ubuntu; fi
+	if [ "$input" = "6" ]; then logo_change zenwalk; fi
+	if [ "$input" = "7" ]; then logo_change custom; fi
+	if [ "$input" = "8" ]; then
+		file_path path
+		set_custom_logo "$path"
+	fi
+	refresh
+	clear
+	logo_change_interface
+}
+
+#Interface for changeing the folder icons.
+function folder_change_interface {
+	echo "Enter the number of the logo you want to use."
+	echo "1. Acyl folder 1 (default)."
+	echo "2. Acyl folder 2."
+	echo "3. Acyl folder 3."
+	echo "4. Acyl folder 4"
+	echo "5. Acyl folder 5."
+	echo "6. Go back to main-menu."
+	read input
+	if [[ "$input" != [1,2,3,4,5] ]]
+	then
+		bash script_menu
+		exit
+	fi
+	if [ "$input" = "1" ]; then folder_change acyl_1; fi
+	if [ "$input" = "2" ]; then folder_change acyl_2; fi
+	if [ "$input" = "3" ]; then folder_change acyl_3; fi
+	if [ "$input" = "4" ]; then folder_change acyl_4; fi
+	if [ "$input" = "5" ]; then folder_change acyl_5; fi
+	refresh
+	clear
+	folder_change_interface
+}
+
+#The main menu.
+clear
+echo "Main menu"
+echo "Enter the number of the action you want to preform."
+echo "1. Set color."
+echo "2. Set gradient."
+echo "3. Switch icons."
+echo "4. Apply filer."
+echo "5. Advanced."
+echo "6. Exit"
+
+read input
+cuver=`bash current_state/current_version`
+
+if [ "$input" = "1" ]; then
+	clear
+	echo "Color menu"
+	echo "Enter the number of the action you want to preform."
+	echo "1. Set colors on all icons."
+	echo "2. Set colors on actions."
+	echo "3. Set colors on emblems."
+	echo "4. Set colors on all icons except actions and emblems."
+	echo "5. Back to main menu."
+	read input2
+	if [ "$input2" = "1" ]; then
+		color color1 opacity1
+		gradient_colors colors $color1 $opacity1 $color1 $opacity1
+		apply_all "none" "$colors" "none"
+		refresh
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "2" ]; then
+		color color1 opacity1
+		gradient_colors colors $color1 $opacity1 $color1 $opacity1
+		apply_actions "none" "$colors" "none"
+		refresh
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "3" ]; then
+		color color1 opacity1
+		gradient_colors colors $color1 $opacity1 $color1 $opacity1
+		apply_emblems "none" "$colors" "none"
+		refresh
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "4" ]; then
+		color color1 opacity1
+		gradient_colors colors $color1 $opacity1 $color1 $opacity1
+		apply_except "none" "$colors" "none"
+		refresh
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "5" ]; then
+		clear
+		bash script_menu
+		exit
+	fi
+fi
+if [ "$input" = "2" ]; then
+	clear
+	echo "Gradient menu"
+	echo "Enter the number of the action you want to preform."
+	echo "1. Set gradient on all icons."
+	echo "2. Set gradient on actions."
+	echo "3. Set gradient on emblems."
+	echo "4. Set gradient on all icons except actions and emblems."
+	echo "5. Back to main menu."
+	read input2
+	if [ "$input2" = "1" ]; then
+		gradient_interface gradtype
+		color color1 opacity1
+		color color2 opacity2
+		gradient_colors colors $color1 $opacity1 $color2 $opacity2
+		apply_all "none" "$colors" "$gradtype"
+		refresh
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "2" ]; then
+		gradient_interface gradtype
+		color color1 opacity1
+		color color2 opacity2
+		gradient_colors colors $color1 $opacity1 $color2 $opacity2
+		apply_actions "none" "$colors" "none"
+		refresh
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "3" ]; then
+		gradient_interface gradtype
+		color color1 opacity1
+		color color2 opacity2
+		gradient_colors colors $color1 $opacity1 $color2 $opacity2
+		apply_emblems "none" "$colors" "none"
+		refresh
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "4" ]; then
+		gradient_interface gradtype
+		color color1 opacity1
+		color color2 opacity2
+		gradient_colors colors $color1 $opacity1 $color2 $opacity2
+		apply_except "none" "$colors" "none"
+		refresh
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "5" ]; then
+		clear
+		bash script_menu
+		exit
+	fi
+fi
+if [ "$input" = "3" ]; then
+	clear
+	echo "Select the icon you want to change."
+	echo "1. Folder icon."
+	echo "2. Logo icon."
+	echo "3. Back to main menu."
+	
+	read input
+	if [ "$input" = "1" ]; then
+		clear
+		folder_change_interface
+		exit
+	fi
+	if [ "$input" = "2" ]; then
+		clear
+		logo_change_interface
+		exit
+	fi
+	input=0
+fi
+if [ "$input" = "4" ]; then
+	clear
+	echo "Filter menu"
+	echo "Enter the number of the action you want to preform."
+	echo "1. Apply filter on all icons."
+	echo "2. Apply filter on actions."
+	echo "3. Apply filter on emblems."
+	echo "4. Apply filter on all icons except actions and emblems."
+	echo "5. Back to main menu."
+
+	read input2
+
+	if [ "$input2" = "1" ]; then
+		filter_interface filter all
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "2" ]; then
+		filter_interface filter actions
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "3" ]; then
+		filter_interface filter emblems
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "4" ]; then
+		filter_interface filter except
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "5" ]; then
+		clear
+		bash script_menu
+		exit
+	fi
+	exit
+
+fi
+while [[ "$input" = "5" ]]
+do
+	clear
+	echo "Advanced menu"
+	echo "Enter the number of the action you want to preform."
+	echo "1. Copy icon-theme with settings to root user.(Requiers password)"
+	echo "2. Create menu icon and terminal command to run this script.(Requiers password)"
+	echo "3. Remove the files created by option 1 and 2.(Requiers password)"
+	echo "4. Fix taskbar icons on apps that don't follow the icon theme.(Requiers fbpanel)"
+	echo "5. Overwrite application specific icons.(Requires password)"
+	echo "6. Back to main menu."
+	read input2
+	if [ "$input2" = "1" ]; then
+		echo "Enter password for root privilege."
+		read -s password
+		root_copy $password
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "2" ]; then
+		echo "Enter password for root privilege."
+		read -s password
+		make_exec $password
+		clear
+		echo "Now you sould have an icon in your gnome-menu for running this script."
+		echo "It should be located under system -> preferences."
+		echo "You can also run it by typing (acyl) in your termnal"
+		echo "Press any key to return to the main menu."
+		read -n 1
+		clear
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "3" ]; then
+		sudo rm /usr/bin/acyl
+		sudo rm /usr/share/applications/acyl.desktop
+		sudo rm ~/.config/autostart/fbpanel.desktop
+		sudo rm ~/.fbpanel/default
+		sudo rmdir /usr/share/icons/$cuver
+		clear
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "4" ]; then
+		bash script_fbpanel
+		clear
+		bash script_menu
+		exit
+	fi
+	if [ "$input2" = "5" ]; then
+		clear
+		echo "This will write over icons used in the application you choose."
+		echo "Bacup icons will be stored in \"/usr/share/pixmap/\""
+		echo "1. Pidgin"
+		echo "2. Sonata"
+		echo "3. Back to main menu."
+		read input3
+		if [ "$input3" = "1" ]; then
+			echo "Enter password for root privilege."
+			read -s password
+			pidgin_copy $password
+			bash script_menu
+			exit
+		fi
+		if [ "$input3" = "2" ]; then
+			echo "Enter password for root privilege."
+			read -s password
+			sonata_copy $password
+			bash script_menu
+			exit
+		fi
+		input=0
+	fi
+	if [ "$input2" = "6" ]; then
+		clear
+		bash script_menu
+		exit
+	fi
+done
+if [ "$input" = "6" ]; then
+	exit
+fi
+clear
+bash script_menu
+exit

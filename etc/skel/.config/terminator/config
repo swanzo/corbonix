@@ -1,0 +1,33 @@
+# Terminator config, see "man terminator_config" for more options
+# ---------------------------------------------------------------
+
+# General settings
+# --------------------------------------
+
+scrollbar_position=disabled
+force_no_bell=true
+
+font=Droid Sans Mono 8
+
+# Colors
+# --------------------------------------
+
+background_color=#356188
+foreground_color=#A7C3DD
+
+palette=#222240405858:#cccc55553333:#8686afaf8080:#e8e8aeae5b5b:#6e6e9292b2b2:#dedeb8b88787:#b0b0c4c4dede:#bbbbaaaa9999:#353561618888:#555544444444:#8888aaaa2222:#ffffa7a75d5d:#8787ceceebeb:#999966660000:#b0b0c4c4dede:#ddddccccbbbb
+
+title_tx_txt_color=#a7c3dd
+title_tx_bg_color=#224058
+
+title_rx_txt_color=#356188
+title_rx_bg_color=#224058
+
+title_ia_txt_color=#356188
+title_ia_bg_color=#224058
+
+# Uncomment below to enable transparency
+# --------------------------------------
+#background_type=transparent
+#enable_real_transparency=true
+#background_darkness=0.8
